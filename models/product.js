@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+var uuid = require("uuid");
 const rootDir = require("../util/path");
 const p = path.join(rootDir, "data", "products.json");
 
@@ -22,7 +23,7 @@ module.exports = class Product {
   }
 
   save() {
-    //products.push(this);
+    this.id = uuid.v1();
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -33,5 +34,12 @@ module.exports = class Product {
 
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  static getProduct(id, cb) {
+    getProductsFromFile((products) => {
+      const product = products.find((p) => p.id === id);
+      cb(product);
+    });
   }
 };
