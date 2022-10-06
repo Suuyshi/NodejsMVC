@@ -1,0 +1,39 @@
+const Product = require("../models/product");
+exports.getAddProduct = (req, res, next) => {
+  res.render("admin/add-product", {
+    pageTitle: "Add Product",
+    path: "/admin/add-product",
+    formsCSS: true,
+    productsCSS: true,
+    activeAddProduct: true,
+  });
+};
+
+exports.postAddProduct = (req, res, next) => {
+  // products.push({ title: req.body.title });
+  const title = req.body.title;
+  const imageUrl = req.body.image;
+  const description = req.body.description;
+  const price = req.body.price;
+  const product = new Product(title, imageUrl, description, price);
+  product.save();
+  res.redirect("/");
+};
+
+exports.postEditProduct = (req, res, next) => {
+  res.redirect("/");
+};
+
+exports.postDeleteProduct = (req, res, next) => {
+  res.redirect("/");
+};
+
+exports.getAdminProducts = (req, res, next) => {
+  const products = Product.fetchAll((products) => {
+    res.render("admin/products", {
+      prods: products,
+      pageTitle: "Admin Products",
+      path: "/admin/products",
+    });
+  });
+};
