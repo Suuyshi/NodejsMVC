@@ -7,6 +7,11 @@ const shopRoutes = require("./routes/shop");
 const app = express();
 const rootDir = require("./util/path");
 const errorController = require("./controllers/error");
+const db = require("./util/database");
+
+db.execute("SELECT * FROM PRODUCTS")
+  .then((result) => console.log(result[0]))
+  .catch((err) => console.log(err));
 
 // //setting default template engine to pug
 // app.set("view engine", "pug");
