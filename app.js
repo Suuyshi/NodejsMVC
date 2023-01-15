@@ -7,11 +7,13 @@ const shopRoutes = require("./routes/shop");
 const app = express();
 const rootDir = require("./util/path");
 const errorController = require("./controllers/error");
-const db = require("./util/database");
+const sequelize = require("./util/database");
 
-db.execute("SELECT * FROM PRODUCTS")
-  .then((result) => console.log(result[0]))
-  .catch((err) => console.log(err));
+// const db = require("./util/database");
+
+// db.execute("SELECT * FROM PRODUCTS")
+//   .then((result) => console.log(result[0]))
+//   .catch((err) => console.log(err));
 
 // //setting default template engine to pug
 // app.set("view engine", "pug");
@@ -45,7 +47,13 @@ app.use(shopRoutes);
 //adding a 404 not found page
 app.use(errorController.get404);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then((res) => {
+    console.log(res);
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));
 
 //app.get only fires for get requests
 //app.post only fires for post requests
