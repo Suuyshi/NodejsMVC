@@ -9,6 +9,9 @@ const rootDir = require("./util/path");
 const errorController = require("./controllers/error");
 const sequelize = require("./util/database");
 
+const Product = require("./models/product");
+const User = require("./models/user");
+
 // const db = require("./util/database");
 
 // db.execute("SELECT * FROM PRODUCTS")
@@ -33,6 +36,16 @@ const sequelize = require("./util/database");
 // );
 // app.set("view engine", "hbs");
 
+//to have the user available in req object
+app.use((req, res, next) =>
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.log(err))
+);
+
 //setting default template engine to ejs
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -47,10 +60,23 @@ app.use(shopRoutes);
 //adding a 404 not found page
 app.use(errorController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Product);
+
 sequelize
   .sync()
   .then((res) => {
-    console.log(res);
+    return User.findByPk(1);
+    //console.log(res);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: "Sarah", email: "test@test.com" });
+    }
+    return user;
+  })
+  .then((user) => {
+    console.log(user);
     app.listen(3000);
   })
   .catch((err) => console.log(err));

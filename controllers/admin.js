@@ -20,12 +20,14 @@ exports.postAddProduct = (req, res, next) => {
   //     res.redirect("/");
   //   })
   //   .catch((err) => console.log(err));
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
+  //magic association
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description,
+    })
     .then(() => res.redirect("/"))
     .catch((err) => console.log(err));
 };
